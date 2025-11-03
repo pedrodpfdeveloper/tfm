@@ -52,6 +52,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
         <nav
             className={`
                     w-full sticky top-0 z-50 transition-all duration-300
+                    border-b border-[var(--navbar-border-light)] dark:border-[var(--navbar-border-dark)] border-solid
                     ${isScrolled
                 ? 'shadow-md bg-[var(--background-50)]/80 backdrop-blur-lg'
                 : 'bg-[var(--background-50)]'
