@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import ThemeSwitcher from './ThemeSwitcher';
 import { createClient } from '@/utils/supabase/client';
@@ -13,16 +13,27 @@ interface NavbarClientProps {
 
 export default function NavbarClient({ user }: NavbarClientProps) {
     const [isScrolled, setIsScrolled] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const router = useRouter();
     const supabase = createClient();
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 10);
         };
         window.addEventListener('scroll', handleScroll);
+
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+
         return () => {
             window.removeEventListener('scroll', handleScroll);
+            document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
 
@@ -30,6 +41,11 @@ export default function NavbarClient({ user }: NavbarClientProps) {
         await supabase.auth.signOut();
         router.push('/');
         router.refresh();
+    };
+
+    const getInitials = (email: string | undefined) => {
+        if (!email) return '';
+        return email.charAt(0).toUpperCase();
     };
 
     return (
@@ -54,14 +70,27 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                 <div className="flex items-center space-x-4">
                     <ThemeSwitcher />
                     {user ? (
-                        <div className="flex items-center space-x-4">
-                            <span className="text-sm hidden sm:block">{user.email}</span>
+                        <div className="relative" ref={dropdownRef}>
                             <button
-                                onClick={handleLogout}
-                                className="px-4 py-2 border rounded-xl border-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--background)] transition-colors"
+                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                className="w-10 h-10 rounded-full bg-[var(--primary)] text-[var(--background)] flex items-center justify-center text-xl font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]"
                             >
-                                Cerrar sesión
+                                {getInitials(user.email)}
                             </button>
+                            {isDropdownOpen && (
+                                <div className="absolute right-0 mt-2 w-64 bg-[var(--background-50)] rounded-lg shadow-lg border border-[var(--gray-200)] overflow-hidden">
+                                    <div className="px-4 py-3 border-b border-[var(--gray-200)]">
+                                        <p className="text-xs text-[var(--text-color)]/80">Sesión iniciada como:</p>
+                                        <p className="text-sm font-medium text-[var(--text-color)] truncate">{user.email}</p>
+                                    </div>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full text-left px-4 py-2 text-sm text-[var(--text-color)] hover:bg-[var(--primary-100)] transition-colors"
+                                    >
+                                        Cerrar sesión
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <div className="flex items-center space-x-2">
