@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from 'react';
-import { createClient } from '@/utils/supabase/client';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default function Register() {
     const [email, setEmail] = useState('');
@@ -11,31 +11,44 @@ export default function Register() {
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const recaptchaRef = useRef<ReCAPTCHA>(null);
 
     const router = useRouter();
-    const supabase = createClient();
 
     const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError(null);
-        setIsSubmitting(true);
         setSuccessMessage(null);
 
-        const { error } = await supabase.auth.signUp({
-            email,
-            password,
+        const captchaToken = recaptchaRef.current?.getValue();
+        if (!captchaToken) {
+            setError("Por favor, completa el CAPTCHA.");
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password, captchaToken }),
         });
 
-        if (error) {
-            setError(error.message);
-            setIsSubmitting(false);
+        const data = await response.json();
+
+        if (!response.ok) {
+            setError(data.message || "Ocurrió un error al registrar la cuenta.");
         } else {
-            setSuccessMessage('¡Cuenta creada con éxito! Redirigiendo a la página principal...');
+            setSuccessMessage("¡Cuenta creada con éxito! Serás redirigido al inicio de sesión.");
+            recaptchaRef.current?.reset();
             setTimeout(() => {
-                router.push('/');
-                router.refresh();
+                router.push('/login');
             }, 3000);
         }
+
+        setIsSubmitting(false);
     };
 
     return (
@@ -73,6 +86,14 @@ export default function Register() {
                             placeholder="••••••••"
                         />
                     </div>
+
+                    <div className="flex justify-center">
+                        <ReCAPTCHA
+                            ref={recaptchaRef}
+                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+                        />
+                    </div>
+
                     {error && (
                         <p className="text-sm text-center text-red-500">{error}</p>
                     )}
