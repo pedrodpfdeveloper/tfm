@@ -64,7 +64,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                     <h1 className="text-2xl font-bold text-[var(--primary)]">Sabores Caseros</h1>
                 </Link>
                 <div className="hidden md:flex items-center space-x-6 text-lg">
-                    <Link href="/#recetas" className="hover:text-[var(--primary)] transition-colors">Recetas</Link>
+                    <Link href="/recetas" className="hover:text-[var(--primary)] transition-colors">Recetas</Link>
                     <Link href="/#faq" className="hover:text-[var(--primary)] transition-colors">FAQ</Link>
                     <Link href="/#footer" className="hover:text-[var(--primary)] transition-colors">Contacto</Link>
                 </div>
