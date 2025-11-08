@@ -1,13 +1,14 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
+
 import { unstable_noStore as noStore } from 'next/cache';
 import { Recipe, RecipeWithIngredients } from "./types";
 
 export async function getRecipes(): Promise<Recipe[]> {
     noStore();
-    const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+
+    const cookieStore = cookies();
+    const supabase = await createClient(cookieStore);
 
     const { data: { user } } = await supabase.auth.getUser();
 
@@ -30,10 +31,10 @@ export async function getRecipes(): Promise<Recipe[]> {
 export async function getRecipeById(id: string): Promise<RecipeWithIngredients | null> {
     noStore();
     if (!id) return null;
-    const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+
+    const cookieStore = cookies();
+    const supabase = await createClient(cookieStore);
+
     const { data: { user } } = await supabase.auth.getUser();
 
     let query = supabase
