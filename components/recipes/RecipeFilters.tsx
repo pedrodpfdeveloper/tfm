@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 
@@ -13,8 +13,27 @@ export default function RecipeFilters({ ingredientsList }: RecipeFiltersProps) {
     const router = useRouter();
     const pathname = usePathname();
 
+    const [open, setOpen] = useState(false);
+    const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+    const selected = useMemo(() => {
+        const raw = searchParams.get("ingredients") ?? "";
+        return raw ? raw.split(",").filter(Boolean) : [];
+    }, [searchParams]);
+
+    const updateIngredientsFilter = (newSelected: string[]) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("page", "1");
+        if (newSelected.length > 0) {
+            params.set("ingredients", newSelected.join(","));
+        } else {
+            params.delete("ingredients");
+        }
+        router.replace(`${pathname}?${params.toString()}`);
+    };
+
     const handleSearch = useDebouncedCallback((term: string) => {
-        const params = new URLSearchParams(searchParams);
+        const params = new URLSearchParams(searchParams.toString());
         params.set('page', '1');
         if (term) {
             params.set('q', term);
@@ -26,7 +45,7 @@ export default function RecipeFilters({ ingredientsList }: RecipeFiltersProps) {
 
     const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target;
-        const params = new URLSearchParams(searchParams);
+        const params = new URLSearchParams(searchParams.toString());
         params.set('page', '1');
         if (value) {
             params.set(name, value);
@@ -36,24 +55,9 @@ export default function RecipeFilters({ ingredientsList }: RecipeFiltersProps) {
         router.replace(`${pathname}?${params.toString()}`);
     };
 
-    const [open, setOpen] = useState(false);
-    const [selected, setSelected] = useState<string[]>([]);
-    const wrapperRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-        const raw = searchParams.get("ingredients") ?? "";
-        if (!raw) {
-            setSelected([]);
-            return;
-        }
-        const values = raw.split(",").filter(Boolean);
-        setSelected(values);
-    }, [searchParams.toString()]);
-
     useEffect(() => {
         function handleClick(e: MouseEvent) {
-            if (!wrapperRef.current) return;
-            if (!wrapperRef.current.contains(e.target as Node)) {
+            if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
                 setOpen(false);
             }
         }
@@ -61,24 +65,17 @@ export default function RecipeFilters({ ingredientsList }: RecipeFiltersProps) {
         return () => document.removeEventListener("mousedown", handleClick);
     }, []);
 
-    useEffect(() => {
-        const params = new URLSearchParams(searchParams as any);
-        params.set("page", "1");
-        if (selected.length) params.set("ingredients", selected.join(","));
-        else params.delete("ingredients");
-        router.replace(`${pathname}?${params.toString()}`);
-    }, [selected]);
-
     const toggleSelect = (name: string) => {
-        setSelected((prev) => {
-            if (prev.includes(name)) return prev.filter((p) => p !== name);
-            return [...prev, name];
-        });
+        const newSelected = selected.includes(name)
+            ? selected.filter((p) => p !== name)
+            : [...selected, name];
+        updateIngredientsFilter(newSelected);
     };
 
-    const removeTag = (name: string, e: React.MouseEvent<HTMLSpanElement>) => {
+    const removeTag = (name: string, e: React.MouseEvent<HTMLSpanElement> | React.KeyboardEvent<HTMLSpanElement>) => {
         e.stopPropagation();
-        setSelected((prev) => prev.filter((p) => p !== name));
+        const newSelected = selected.filter((p) => p !== name);
+        updateIngredientsFilter(newSelected);
     };
 
     return (
@@ -102,7 +99,7 @@ export default function RecipeFilters({ ingredientsList }: RecipeFiltersProps) {
                     className="relative w-full text-left p-2 pr-10 border rounded-md flex flex-wrap items-center gap-2 min-h-[44px] bg-[var(--select-bg,white)] text-[var(--select-text,#000)] border-[var(--select-border,#d1d5db)] cursor-pointer"
                 >
                     {selected.length === 0 ? (
-                        <span className="opacity-60">Todos los ingredientes</span>
+                        <span>Todos los ingredientes</span>
                     ) : (
                         <div className="flex flex-wrap gap-2">
                             {selected.map((s) => (
@@ -110,26 +107,26 @@ export default function RecipeFilters({ ingredientsList }: RecipeFiltersProps) {
                                     key={s}
                                     className="flex items-center gap-2 text-sm px-2 py-0.5 rounded-full border bg-[var(--tag-bg,#f3f4f6)] text-[var(--tag-text,#111)]"
                                 >
-                  <span className="truncate max-w-[10rem]">{s}</span>
-                  <span
-                      role="button"
-                      tabIndex={0}
-                      onClick={(e) => removeTag(s, e)}
-                      onKeyDown={(e) => e.key === "Enter" && removeTag(s, e)}
-                      aria-label={`Quitar ${s}`}
-                      className="ml-1 text-xs leading-none cursor-pointer"
-                  >
-                    ✕
-                  </span>
-                </span>
+                                    <span className="truncate max-w-[10rem]">{s}</span>
+                                    <span
+                                        role="button"
+                                        tabIndex={0}
+                                        onClick={(e) => removeTag(s, e)}
+                                        onKeyDown={(e) => e.key === "Enter" && removeTag(s, e)}
+                                        aria-label={`Quitar ${s}`}
+                                        className="ml-1 text-xs leading-none cursor-pointer"
+                                    >
+                                        ✕
+                                    </span>
+                                </span>
                             ))}
                         </div>
                     )}
                     <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2">
-            <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M6 7l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </span>
+                        <svg className="w-4 h-4" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 7l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </span>
                 </div>
 
                 {open && (
@@ -161,21 +158,15 @@ export default function RecipeFilters({ ingredientsList }: RecipeFiltersProps) {
                         )}
 
                         <div className="mt-2 border-t pt-2 flex gap-2">
+
                             <button
                                 type="button"
-                                onClick={() => setSelected(ingredientsList.map((i) => i.name))}
-                                className="px-2 py-1 rounded-md text-sm border"
-                            >
-                                Seleccionar todo
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setSelected([])}
-                                className="px-2 py-1 rounded-md text-sm border"
+                                onClick={() => updateIngredientsFilter([])}
+                                className="px-2 py-1 ml-2 rounded-md text-sm border"
                             >
                                 Limpiar
                             </button>
-                            <button type="button" onClick={() => setOpen(false)} className="ml-auto px-2 py-1 rounded-md text-sm border">
+                            <button type="button" onClick={() => setOpen(false)} className="ml-auto px-2 py-1 mr-2 rounded-md text-sm border">
                                 Cerrar
                             </button>
                         </div>
