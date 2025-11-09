@@ -20,6 +20,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                        loading="eager"
                     />
                 </div>
 
