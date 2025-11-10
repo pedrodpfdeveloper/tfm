@@ -2,6 +2,8 @@ import { getRecipes, getAllIngredients } from "@/lib/data";
 import RecipeCard from "@/components/recipes/RecipeCard";
 import RecipeFilters from "@/components/recipes/RecipeFilters";
 import PaginationControls from "@/components/recipes/PaginationControls";
+import Link from "next/link";
+import { getAuthWithRole } from "@/lib/auth";
 
 interface RecipesPageProps {
     searchParams?: {
@@ -18,6 +20,8 @@ export default async function RecipesPage({ searchParams: searchParamsPromise }:
     const ingredients = searchParams?.ingredients || '';
     const duration = searchParams?.duration || '';
     const currentPage = Number(searchParams?.page) || 1;
+
+    const { isAdmin } = await getAuthWithRole();
 
     const { recipes, totalCount } = await getRecipes({
         query,
@@ -40,11 +44,19 @@ export default async function RecipesPage({ searchParams: searchParamsPromise }:
 
             <RecipeFilters ingredientsList={ingredientsList} />
 
+            {isAdmin && (
+                <div className="mb-6 flex justify-end">
+                    <Link href="/recetas/nueva" className="px-3 py-2 border rounded-md hover:bg-[var(--gray-50)]">
+                        Nueva receta
+                    </Link>
+                </div>
+            )}
+
             {validRecipes.length > 0 ? (
                 <>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         {validRecipes.map((recipe) => (
-                            <RecipeCard key={recipe.id} recipe={recipe} />
+                            <RecipeCard key={recipe.id} recipe={recipe} isAdmin={isAdmin} />
                         ))}
                     </div>
 
