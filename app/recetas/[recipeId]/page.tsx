@@ -1,6 +1,7 @@
 import { getRecipeById } from "@/lib/data";
 import { notFound } from "next/navigation";
 import Image from 'next/image';
+import Link from 'next/link';
 
 type Params = { recipeId: string };
 
@@ -19,7 +20,17 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
 
     return (
         <article className="max-w-4xl mx-auto px-6 py-12">
-            <h1 className="text-4xl md:text-5xl font-bold text-[var(--primary)] mb-4">{recipe.title}</h1>
+            <div className="mb-4 flex items-center gap-3">
+                <Link
+                    href="/recetas"
+                    aria-label="Volver a recetas"
+                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border bg-[var(--button-bg,white)] text-[var(--button-text,#111)] hover:bg-[var(--gray-50)] dark:bg-gray-800 dark:text-white"
+                >
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    <span>Volver</span>
+                </Link>
+                <h1 className="text-4xl md:text-5xl font-bold text-[var(--primary)]">{recipe.title}</h1>
+            </div>
             <p className="text-lg text-[var(--text)]/80 mb-8">{recipe.description}</p>
             <div className="relative w-full h-64 md:h-96 rounded-xl overflow-hidden mb-8 shadow-lg">
                 <Image

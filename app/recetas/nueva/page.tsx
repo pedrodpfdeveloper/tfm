@@ -1,6 +1,7 @@
 import { getAuthWithRole } from "@/lib/auth";
 import { createRecipe } from "../actions";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default async function NewRecipePage() {
   const { isAdmin } = await getAuthWithRole();
@@ -8,7 +9,17 @@ export default async function NewRecipePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold mb-6">Nueva receta</h1>
+      <div className="mb-6 flex items-center gap-3">
+        <Link
+          href="/recetas"
+          aria-label="Volver a recetas"
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border bg-[var(--button-bg,white)] text-[var(--button-text,#111)] hover:bg-[var(--gray-50)] dark:bg-gray-800 dark:text-white"
+        >
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span>Volver</span>
+        </Link>
+        <h1 className="text-3xl font-bold">Nueva receta</h1>
+      </div>
       <form action={createRecipe} className="space-y-4">
         <div>
           <label className="block text-sm mb-1">Título</label>
