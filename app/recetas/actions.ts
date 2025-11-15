@@ -38,13 +38,28 @@ export async function createRecipe(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
   const instructions = String(formData.get("instructions") ?? "").trim();
-  const image_url = String(formData.get("image_url") ?? "").trim() || null;
   const prep_time_minutes = toInt(formData.get("prep_time_minutes"));
   const cook_time_minutes = toInt(formData.get("cook_time_minutes"));
   const servings = toInt(formData.get("servings"));
   const is_public = toBool(formData.get("is_public"));
 
   const supabase = await createClient(cookies());
+  const image = formData.get("image") as File | null;
+  let image_url: string | null = null;
+  if (image && (image as any).size > 0) {
+    const bucket = "recipe-images";
+    const fileExt = image.name?.split(".").pop() || "jpg";
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
+    const filePath = `recipes/${fileName}`;
+    const { error: uploadError } = await supabase.storage
+      .from(bucket)
+      .upload(filePath, image, { upsert: true, contentType: image.type || undefined, cacheControl: "3600" });
+    if (!uploadError) {
+      const { data } = supabase.storage.from(bucket).getPublicUrl(filePath);
+      image_url = data.publicUrl;
+    }
+  }
+
   const { data, error } = await supabase
     .from("recipes")
     .insert({
@@ -75,13 +90,27 @@ export async function updateRecipe(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
   const instructions = String(formData.get("instructions") ?? "").trim();
-  const image_url = String(formData.get("image_url") ?? "").trim() || null;
   const prep_time_minutes = toInt(formData.get("prep_time_minutes"));
   const cook_time_minutes = toInt(formData.get("cook_time_minutes"));
   const servings = toInt(formData.get("servings"));
   const is_public = toBool(formData.get("is_public"));
 
   const supabase = await createClient(cookies());
+  const image = formData.get("image") as File | null;
+  let image_url = String(formData.get("existing_image_url") ?? "").trim() || null;
+  if (image && (image as any).size > 0) {
+    const bucket = "recipe-images";
+    const fileExt = image.name?.split(".").pop() || "jpg";
+    const fileName = `${crypto.randomUUID()}.${fileExt}`;
+    const filePath = `recipes/${fileName}`;
+    const { error: uploadError } = await supabase.storage
+      .from(bucket)
+      .upload(filePath, image, { upsert: true, contentType: image.type || undefined, cacheControl: "3600" });
+    if (!uploadError) {
+      const { data } = supabase.storage.from(bucket).getPublicUrl(filePath);
+      image_url = data.publicUrl;
+    }
+  }
   await supabase
     .from("recipes")
     .update({

@@ -29,8 +29,9 @@ export default async function EditRecipePage({ params }: Props) {
         </Link>
         <h1 className="text-3xl font-bold">Editar receta</h1>
       </div>
-      <form action={updateRecipe} className="space-y-4">
+      <form action={updateRecipe} encType="multipart/form-data" className="space-y-4">
         <input type="hidden" name="id" value={recipe.id} />
+        <input type="hidden" name="existing_image_url" value={recipe.image_url ?? ''} />
         <div>
           <label className="block text-sm mb-1">Título</label>
           <input name="title" defaultValue={recipe.title} required className="w-full border rounded-md p-2" />
@@ -44,8 +45,8 @@ export default async function EditRecipePage({ params }: Props) {
           <textarea name="instructions" defaultValue={recipe.instructions} required className="w-full border rounded-md p-2" rows={6} />
         </div>
         <div>
-          <label className="block text-sm mb-1">URL de imagen</label>
-          <input name="image_url" defaultValue={recipe.image_url ?? ""} className="w-full border rounded-md p-2" />
+          <label className="block text-sm mb-1">Imagen</label>
+          <input type="file" name="image" accept="image/*" className="w-full border rounded-md p-2" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>

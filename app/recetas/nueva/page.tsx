@@ -20,7 +20,7 @@ export default async function NewRecipePage() {
         </Link>
         <h1 className="text-3xl font-bold">Nueva receta</h1>
       </div>
-      <form action={createRecipe} className="space-y-4">
+      <form action={createRecipe} encType="multipart/form-data" className="space-y-4">
         <div>
           <label className="block text-sm mb-1">Título</label>
           <input name="title" required className="w-full border rounded-md p-2" />
@@ -34,8 +34,8 @@ export default async function NewRecipePage() {
           <textarea name="instructions" required className="w-full border rounded-md p-2" rows={6} />
         </div>
         <div>
-          <label className="block text-sm mb-1">URL de imagen</label>
-          <input name="image_url" className="w-full border rounded-md p-2" />
+          <label className="block text-sm mb-1">Imagen</label>
+          <input type="file" name="image" accept="image/*" className="w-full border rounded-md p-2" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
