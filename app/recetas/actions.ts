@@ -17,6 +17,10 @@ function toInt(v: FormDataEntryValue | null) {
   return Number.isFinite(n) ? n : null;
 }
 
+function isFile(v: FormDataEntryValue | null): v is File {
+    return v instanceof File;
+}
+
 export async function deleteRecipe(formData: FormData) {
   const { isAdmin } = await getAuthWithRole();
   if (!isAdmin) return;
@@ -44,9 +48,9 @@ export async function createRecipe(formData: FormData) {
   const is_public = toBool(formData.get("is_public"));
 
   const supabase = await createClient(cookies());
-  const image = formData.get("image") as File | null;
+  const image = formData.get("image");
   let image_url: string | null = null;
-  if (image && (image as any).size > 0) {
+  if (isFile(image) && image.size > 0) {
     const bucket = "recipe-images";
     const fileExt = image.name?.split(".").pop() || "jpg";
     const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
@@ -96,9 +100,9 @@ export async function updateRecipe(formData: FormData) {
   const is_public = toBool(formData.get("is_public"));
 
   const supabase = await createClient(cookies());
-  const image = formData.get("image") as File | null;
+  const image = formData.get("image");
   let image_url = String(formData.get("existing_image_url") ?? "").trim() || null;
-  if (image && (image as any).size > 0) {
+  if (isFile(image) && image.size > 0) {
     const bucket = "recipe-images";
     const fileExt = image.name?.split(".").pop() || "jpg";
     const fileName = `${crypto.randomUUID()}.${fileExt}`;
