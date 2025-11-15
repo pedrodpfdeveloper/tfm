@@ -117,3 +117,24 @@ export async function getRecipeById(id: string): Promise<RecipeWithIngredients |
 
     return recipe;
 }
+
+export async function getRandomPublicRecipes(limit: number = 6): Promise<Recipe[]> {
+    noStore();
+
+    const cookieStore = cookies();
+    const supabase = await createClient(cookieStore);
+
+    const { data, error } = await supabase
+        .from('recipes')
+        .select('*')
+        .eq('is_public', true)
+        .limit(30);
+
+    if (error || !data) {
+        console.error('Error fetching random public recipes:', error);
+        return [];
+    }
+
+    const shuffled = [...data].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, limit);
+}
