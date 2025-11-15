@@ -14,6 +14,8 @@ interface NavbarClientProps {
 export default function NavbarClient({ user }: NavbarClientProps) {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
     const router = useRouter();
     const supabase = createClient();
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -66,10 +68,11 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                 <div className="hidden md:flex items-center space-x-6 text-lg">
                     <Link href="/recetas" className="hover:text-[var(--primary)] transition-colors">Recetas</Link>
                     <Link href="/#faq" className="hover:text-[var(--primary)] transition-colors">FAQ</Link>
-                    <Link href="/#footer" className="hover:text-[var(--primary)] transition-colors">Contacto</Link>
+                    <Link href="/contacto" className="hover:text-[var(--primary)] transition-colors">Contacto</Link>
                 </div>
                 <div className="flex items-center space-x-4">
                     <ThemeSwitcher />
+
                     {user ? (
                         <div className="relative" ref={dropdownRef}>
                             <button
@@ -94,17 +97,70 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                             )}
                         </div>
                     ) : (
-                        <div className="flex items-center space-x-2">
+                        <div className="hidden md:flex items-center space-x-2">
                             <Link href="/login" className="px-4 py-2 border rounded-xl border-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--background)] transition-colors">
                                 Iniciar sesión
                             </Link>
+
                             <Link href="/register" className="px-4 py-2 bg-[var(--primary)] text-[var(--background)] rounded-xl hover:bg-[var(--primary-600)] transition-colors">
                                 Registrarse
                             </Link>
                         </div>
                     )}
+                    <button
+                        type="button"
+                        className="md:hidden inline-flex items-center justify-center p-2 rounded-md border border-[var(--navbar-border-light)] text-[var(--text-color)]"
+                        aria-label="Abrir menú de navegación"
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    >
+                        {isMobileMenuOpen ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="3" y1="12" x2="21" y2="12" />
+                                <line x1="3" y1="6" x2="21" y2="6" />
+                                <line x1="3" y1="18" x2="21" y2="18" />
+                            </svg>
+                        )}
+                    </button>
                 </div>
             </div>
+            {isMobileMenuOpen && (
+                <div className="md:hidden border-t border-[var(--navbar-border-light)] bg-[var(--background-50)]">
+                    <div className="max-w-[88rem] mx-auto px-6 py-3 flex flex-col space-y-3">
+                        <Link href="/recetas" className="hover:text-[var(--primary)] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                            Recetas
+                        </Link>
+                        <Link href="/#faq" className="hover:text-[var(--primary)] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                            FAQ
+                        </Link>
+                        <Link href="/contacto" className="hover:text-[var(--primary)] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                            Contacto
+                        </Link>
+                        {!user && (
+                            <>
+                                <Link
+                                    href="/login"
+                                    className="hover:text-[var(--primary)] transition-colors"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                >
+                                    Iniciar sesión
+                                </Link>
+                                <Link
+                                    href="/register"
+                                    className="hover:text-[var(--primary)] transition-colors"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                >
+                                    Registrarse
+                                </Link>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
         </nav>
     );
 }
