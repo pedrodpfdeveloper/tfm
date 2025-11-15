@@ -11,20 +11,18 @@ export default async function RotatingRecipesSection() {
 
   return (
     <section className="bg-[var(--background-50)] py-10">
-      <div className="max-w-7xl mx-auto px-6 mb-4">
-        <div className="flex items-baseline justify-between">
-          <h3 className="text-2xl md:text-3xl font-bold text-[var(--primary)] mb-2">
-            Sabores en movimiento
-          </h3>
-        </div>
+      <div className="max-w-7xl mx-auto px-6 mb-4 text-center">
+        <h3 className="text-2xl md:text-3xl font-bold text-[var(--primary)] mb-12">
+          Sabores en movimiento
+        </h3>
       </div>
-      <div className="group relative overflow-hidden w-full">
-        <div className="flex gap-8 animate-scroll-recipes pause-on-hover px-4 sm:px-8">
+      <div className="group relative overflow-hidden w-full px-4 sm:px-8">
+        <div className="flex w-max gap-8 animate-scroll-recipes pause-on-hover">
           {items.map((recipe, index) => (
             <Link
               key={`${recipe.id}-${index}`}
               href={`/recetas/${recipe.id}`}
-              className="min-w-[320px] max-w-[320px] sm:min-w-[360px] sm:max-w-[360px]"
+              className="shrink-0 w-[320px] sm:w-[360px]"
             >
               <article className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-md bg-[var(--background-100)] hover:shadow-xl transition-shadow duration-300">
                 <div className="relative w-full h-full">
