@@ -2,6 +2,7 @@ import { getAuthWithRole } from "@/lib/auth";
 import { createRecipe } from "../actions";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import ImageUploader from "@/components/forms/ImageUploader";
 
 export default async function NewRecipePage() {
   const { isAdmin } = await getAuthWithRole();
@@ -33,10 +34,7 @@ export default async function NewRecipePage() {
           <label className="block text-sm mb-1">Instrucciones</label>
           <textarea name="instructions" required className="w-full border rounded-md p-2" rows={6} />
         </div>
-        <div>
-          <label className="block text-sm mb-1">Imagen</label>
-          <input type="file" name="image" accept="image/*" className="w-full border rounded-md p-2" />
-        </div>
+        <ImageUploader className="w-full" />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="block text-sm mb-1">Prep. (min)</label>

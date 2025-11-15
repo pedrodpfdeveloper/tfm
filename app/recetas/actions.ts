@@ -29,6 +29,26 @@ export async function deleteRecipe(formData: FormData) {
   if (!Number.isFinite(id)) return;
 
   const supabase = await createClient(cookies());
+  const { data: recipeRow } = await supabase
+    .from("recipes")
+    .select("image_url")
+    .eq("id", id)
+    .single();
+
+  const bucket = "recipe-images";
+  const imageUrl: string | null | undefined = recipeRow?.image_url as any;
+  if (imageUrl) {
+    try {
+      const url = new URL(imageUrl);
+      const prefix = `/storage/v1/object/public/${bucket}/`;
+      if (url.pathname.startsWith(prefix)) {
+        const filePath = url.pathname.slice(prefix.length);
+        if (filePath) {
+          await supabase.storage.from(bucket).remove([filePath]);
+        }
+      }
+    } catch {}
+  }
   await supabase.from("recipe_ingredients").delete().eq("recipe_id", id);
   await supabase.from("recipes").delete().eq("id", id);
 
