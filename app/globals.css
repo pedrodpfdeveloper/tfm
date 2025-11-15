@@ -166,4 +166,13 @@ body {
   .group:hover .pause-on-hover {
     animation-play-state: paused;
   }
+
+  .back-button {
+    color: var(--text-600);
+    transition: color 0.2s ease;
+  }
+
+  .back-button:hover {
+    color: var(--primary);
+  }
 }

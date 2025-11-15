@@ -20,16 +20,29 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
 
     return (
         <article className="max-w-4xl mx-auto px-6 py-12">
-            <div className="mb-4 flex items-center gap-3">
+            <div className="mb-8">
                 <Link
                     href="/recetas"
                     aria-label="Volver a recetas"
-                    className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border bg-[var(--button-bg,white)] text-[var(--button-text,#111)] hover:bg-[var(--gray-50)] dark:bg-gray-800 dark:text-white"
+                    className="back-button inline-flex items-center gap-2 py-2 text-sm font-medium group"
                 >
-                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                    <span>Volver</span>
+                    <svg 
+                        aria-hidden="true" 
+                        width="16" 
+                        height="16" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                        className="transition-transform duration-200 group-hover:-translate-x-1"
+                    >
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    <span>Volver a recetas</span>
                 </Link>
-                <h1 className="text-4xl md:text-5xl font-bold text-[var(--primary)]">{recipe.title}</h1>
+                <h1 className="text-4xl md:text-5xl font-bold text-[var(--primary)] mt-4">{recipe.title}</h1>
             </div>
             <p className="text-lg text-[var(--text)]/80 mb-8">{recipe.description}</p>
             <div className="relative w-full h-64 md:h-96 rounded-xl overflow-hidden mb-8 shadow-lg">

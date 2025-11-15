@@ -10,16 +10,29 @@ export default async function NewRecipePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-12">
-      <div className="mb-6 flex items-center gap-3">
+      <div className="mb-8">
         <Link
           href="/recetas"
           aria-label="Volver a recetas"
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border bg-[var(--button-bg,white)] text-[var(--button-text,#111)] hover:bg-[var(--gray-50)] dark:bg-gray-800 dark:text-white"
+          className="back-button inline-flex items-center gap-2 py-2 text-sm font-medium group"
         >
-          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          <span>Volver</span>
+          <svg 
+            aria-hidden="true" 
+            width="16" 
+            height="16" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            stroke="currentColor" 
+            strokeWidth="2" 
+            strokeLinecap="round" 
+            strokeLinejoin="round"
+            className="transition-transform duration-200 group-hover:-translate-x-1"
+          >
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          <span>Volver a recetas</span>
         </Link>
-        <h1 className="text-3xl font-bold">Nueva receta</h1>
+        <h1 className="text-3xl font-bold mt-4">Nueva receta</h1>
       </div>
       <form action={createRecipe} className="space-y-4">
         <div>
