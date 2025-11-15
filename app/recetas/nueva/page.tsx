@@ -21,7 +21,7 @@ export default async function NewRecipePage() {
         </Link>
         <h1 className="text-3xl font-bold">Nueva receta</h1>
       </div>
-      <form action={createRecipe} encType="multipart/form-data" className="space-y-4">
+      <form action={createRecipe} className="space-y-4">
         <div>
           <label className="block text-sm mb-1">Título</label>
           <input name="title" required className="w-full border rounded-md p-2" />

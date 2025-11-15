@@ -88,7 +88,7 @@ export async function generateMetadata({ params }: RecipeDetailPageProps) {
     }
 
     return {
-        title: `${recipe.title} | Sabores Caseros`,
+        title: `${recipe.title} | BocadoBoreal`,
         description: recipe.description,
     };
 }

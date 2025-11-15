@@ -61,7 +61,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
         >
             <div className="max-w-[88rem] mx-auto flex justify-between items-center p-4 px-6">
                 <Link href="/">
-                    <h1 className="text-2xl font-bold text-[var(--primary)]">Sabores Caseros</h1>
+                    <h1 className="text-2xl font-bold text-[var(--primary)]">BocadoBoreal</h1>
                 </Link>
                 <div className="hidden md:flex items-center space-x-6 text-lg">
                     <Link href="/recetas" className="hover:text-[var(--primary)] transition-colors">Recetas</Link>

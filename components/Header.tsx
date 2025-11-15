@@ -9,7 +9,7 @@ export default function Header() {
         <header className="sticky top-0 z-50 w-full border-b border-text/10 bg-background/80 backdrop-blur-lg">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
                 <Link href="/" className="font-serif text-2xl font-bold text-primary">
-                    Sabores Caseros
+                    BocadoBoreal
                 </Link>
                 <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
                     <Link href="#features" className="transition-colors hover:text-primary">

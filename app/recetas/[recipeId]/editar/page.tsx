@@ -30,7 +30,7 @@ export default async function EditRecipePage({ params }: Props) {
         </Link>
         <h1 className="text-3xl font-bold">Editar receta</h1>
       </div>
-      <form action={updateRecipe} encType="multipart/form-data" className="space-y-4">
+      <form action={updateRecipe} className="space-y-4">
         <input type="hidden" name="id" value={recipe.id} />
         <input type="hidden" name="existing_image_url" value={recipe.image_url ?? ''} />
         <div>

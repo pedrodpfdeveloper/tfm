@@ -9,7 +9,7 @@ export default function HeroSection() {
                     Descubre el sabor de lo <span className="text-[var(--primary)]">hecho en casa</span>
                 </h2>
                 <p className="text-lg text-[var(--text-600)]">
-                    En <strong>Sabores Caseros</strong> puedes encontrar recetas deliciosas con los ingredientes que ya tienes en casa. Filtra, explora y cocina con amor.
+                    En <strong>BocadoBoreal</strong> puedes encontrar recetas deliciosas con los ingredientes que ya tienes en casa. Filtra, explora y cocina con amor.
                 </p>
                 <div className="flex space-x-4">
                     <Link href="/recetas" className="px-6 py-3 bg-[var(--primary)] text-[var(--background)] rounded-xl font-semibold hover:opacity-90 transition-opacity">Ver recetas</Link>

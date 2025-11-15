@@ -36,7 +36,7 @@ export async function deleteRecipe(formData: FormData) {
     .single();
 
   const bucket = "recipe-images";
-  const imageUrl: string | null | undefined = recipeRow?.image_url as any;
+  const imageUrl = typeof recipeRow?.image_url === "string" ? recipeRow.image_url : null;
   if (imageUrl) {
     try {
       const url = new URL(imageUrl);
@@ -122,10 +122,24 @@ export async function updateRecipe(formData: FormData) {
   const supabase = await createClient(cookies());
   const image = formData.get("image");
   let image_url = String(formData.get("existing_image_url") ?? "").trim() || null;
+  const hadPreviousImage = !!image_url;
   if (isFile(image) && image.size > 0) {
     const bucket = "recipe-images";
+    if (hadPreviousImage) {
+      try {
+        const url = new URL(image_url as string);
+        const prefix = `/storage/v1/object/public/${bucket}/`;
+        if (url.pathname.startsWith(prefix)) {
+          const filePathToDelete = url.pathname.slice(prefix.length);
+          if (filePathToDelete) {
+            await supabase.storage.from(bucket).remove([filePathToDelete]);
+          }
+        }
+      } catch {}
+    }
+
     const fileExt = image.name?.split(".").pop() || "jpg";
-    const fileName = `${crypto.randomUUID()}.${fileExt}`;
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
     const filePath = `recipes/${fileName}`;
     const { error: uploadError } = await supabase.storage
       .from(bucket)
