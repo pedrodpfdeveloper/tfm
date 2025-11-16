@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import ThemeSwitcher from './ThemeSwitcher';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
@@ -62,7 +63,15 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                 `}
         >
             <div className="max-w-[88rem] mx-auto flex justify-between items-center p-4 px-6">
-                <Link href="/">
+                <Link href="/" className="flex items-center space-x-2">
+                    <Image
+                        src="/favicon.png"
+                        alt="BocadoBoreal logo"
+                        width={52}
+                        height={52}
+                        className="rounded-lg"
+                        priority
+                    />
                     <h1 className="text-2xl font-bold text-[var(--primary)]">BocadoBoreal</h1>
                 </Link>
                 <div className="hidden md:flex items-center space-x-6 text-lg">

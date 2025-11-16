@@ -6,24 +6,9 @@ const supabaseHostname = supabaseUrl ? new URL(supabaseUrl).hostname : undefined
 const remotePatterns: NonNullable<NextConfig["images"]>['remotePatterns'] = [
     {
         protocol: 'https',
-        hostname: 'img2.rtve.es',
+        hostname: 'img.spoonacular.com',
         pathname: '/**',
-    },
-    {
-        protocol: 'https',
-        hostname: 'hitsnoodles.com',
-        pathname: '/**',
-    },
-    {
-        protocol: 'https',
-        hostname: 'i.ytimg.com',
-        pathname: '/**',
-    },
-    {
-        protocol: 'https',
-        hostname: 'galbani.es',
-        pathname: '/**',
-    },
+    }
 ];
 
 if (supabaseHostname) {

@@ -12,10 +12,13 @@ export const metadata: Metadata = {
     title: 'BocadoBoreal | Encuentra recetas con lo que tienes en casa',
     description: 'Explora recetas caseras, filtra por ingredientes y disfruta del placer de cocinar con lo que tienes en casa.',
     keywords: 'recetas, cocina casera, ingredientes, filtro de recetas, comida fácil, cocina económica',
+    icons: {
+        icon: '/favicon.png',
+    },
     openGraph: {
         title: 'BocadoBoreal',
         description: 'Encuentra recetas con los ingredientes que tienes en casa.',
-        url: 'https://bocadoboreal.com',
+        url: 'https://www.bocadoboreal.com',
         siteName: 'BocadoBoreal',
         images: [
             {
