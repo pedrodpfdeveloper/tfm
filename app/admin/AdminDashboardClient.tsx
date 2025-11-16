@@ -236,7 +236,7 @@ export default function AdminDashboardClient({ initialUsers, roles, stats }: Adm
                 {filteredUsers.map((u) => (
                   <tr key={u.id} className="hover:bg-[var(--primary-50)] transition-colors">
                     <td className="px-4 py-2 border-b border-[var(--gray-100)]">
-                      <span className="font-medium" title={u.id}>
+                      <span className="font-medium">
                         {u.email ?? "(sin email)"}
                       </span>
                     </td>
