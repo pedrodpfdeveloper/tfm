@@ -175,7 +175,7 @@ export default function AdminDashboardClient({ initialUsers, roles }: AdminDashb
         <button
           type="button"
           onClick={handleOpenCreate}
-          className="px-4 py-2 rounded-md bg-[var(--primary)] text-[var(--background)] font-medium hover:bg-[var(--primary-600)] transition-colors"
+          className="px-4 py-2 rounded-md bg-[var(--primary)] text-white font-medium hover:bg-[var(--primary-600)] transition-colors"
         >
           Nuevo usuario
         </button>
@@ -186,8 +186,8 @@ export default function AdminDashboardClient({ initialUsers, roles }: AdminDashb
         {filteredUsers.length === 0 ? (
           <p className="text-sm text-[var(--text-color)]/80">No hay usuarios que coincidan con la búsqueda.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm border border-[var(--gray-200)] rounded-lg overflow-hidden">
+          <div className="overflow-x-auto rounded-xl border border-[var(--gray-300)] bg-[var(--background)] shadow-sm">
+            <table className="min-w-full text-sm">
               <thead className="bg-[var(--background-50)]">
                 <tr>
                   <th className="px-4 py-2 text-left border-b border-[var(--gray-200)]">Correo electrónico</th>
@@ -212,7 +212,7 @@ export default function AdminDashboardClient({ initialUsers, roles }: AdminDashb
                       <button
                         type="button"
                         onClick={() => handleOpenChangeRole(u)}
-                        className="px-2 py-1 rounded-md bg-[var(--primary)] text-[var(--background)] text-xs font-medium hover:bg-[var(--primary-600)] transition-colors"
+                        className="px-2 py-1 rounded-md bg-[var(--primary)] text-white text-xs font-medium hover:bg-[var(--primary-600)] transition-colors"
                       >
                         Cambiar rol
                       </button>
