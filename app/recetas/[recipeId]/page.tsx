@@ -63,10 +63,6 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
                     <p className="font-bold text-lg">{recipe.cook_time_minutes} min</p>
                     <p className="text-sm text-[var(--text)]/70">Cocción</p>
                 </div>
-                <div className="text-center">
-                    <p className="font-bold text-lg">{recipe.servings}</p>
-                    <p className="text-sm text-[var(--text)]/70">Porciones</p>
-                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">

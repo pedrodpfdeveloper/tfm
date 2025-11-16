@@ -64,7 +64,6 @@ export async function createRecipe(formData: FormData) {
   const instructions = String(formData.get("instructions") ?? "").trim();
   const prep_time_minutes = toInt(formData.get("prep_time_minutes"));
   const cook_time_minutes = toInt(formData.get("cook_time_minutes"));
-  const servings = toInt(formData.get("servings"));
   const is_public = toBool(formData.get("is_public"));
 
   const supabase = await createClient(cookies());
@@ -93,7 +92,6 @@ export async function createRecipe(formData: FormData) {
       image_url,
       prep_time_minutes,
       cook_time_minutes,
-      servings,
       is_public,
     })
     .select("id")
@@ -187,7 +185,6 @@ export async function updateRecipe(formData: FormData) {
   const instructions = String(formData.get("instructions") ?? "").trim();
   const prep_time_minutes = toInt(formData.get("prep_time_minutes"));
   const cook_time_minutes = toInt(formData.get("cook_time_minutes"));
-  const servings = toInt(formData.get("servings"));
   const is_public = toBool(formData.get("is_public"));
 
   const supabase = await createClient(cookies());
@@ -229,7 +226,6 @@ export async function updateRecipe(formData: FormData) {
       image_url,
       prep_time_minutes,
       cook_time_minutes,
-      servings,
       is_public,
     })
     .eq("id", id);

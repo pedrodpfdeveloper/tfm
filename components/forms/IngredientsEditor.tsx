@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 interface IngredientItem {
   id: string;
@@ -15,29 +15,24 @@ interface IngredientsEditorProps {
 
 export default function IngredientsEditor({
   existingIngredients,
-  initialItems = [],
+  initialItems,
 }: IngredientsEditorProps) {
-  const [items, setItems] = useState<IngredientItem[]>([]);
-
-  useEffect(() => {
-    if (initialItems.length > 0) {
-      setItems(
-        initialItems.map((item, index) => ({
-          id: String(index + 1),
-          name: item.name,
-          quantity: item.quantity,
-        }))
-      );
-    } else {
-      setItems([
-        {
-          id: "1",
-          name: "",
-          quantity: "",
-        },
-      ]);
+  const [items, setItems] = useState<IngredientItem[]>(() => {
+    if (initialItems && initialItems.length > 0) {
+      return initialItems.map((item, index) => ({
+        id: String(index + 1),
+        name: item.name,
+        quantity: item.quantity,
+      }));
     }
-  }, [initialItems]);
+    return [
+      {
+        id: "1",
+        name: "",
+        quantity: "",
+      },
+    ];
+  });
 
   const addRow = () => {
     setItems((prev) => [
@@ -90,7 +85,7 @@ export default function IngredientsEditor({
 
       <div className="space-y-2">
         {items.map((item) => (
-          <div key={item.id} className="grid grid-cols-12 gap-2 items-end">
+          <div key={item.id} className="grid grid-cols-12 gap-2 items-center">
             <div className="col-span-6">
               <label className="block text-xs mb-1">Ingrediente</label>
               <input
@@ -114,7 +109,7 @@ export default function IngredientsEditor({
                 placeholder="Ej. 2 unidades, 100 g..."
               />
             </div>
-            <div className="col-span-1 flex justify-end">
+            <div className="col-span-1 flex items-center justify-end">
               <button
                 type="button"
                 onClick={() => removeRow(item.id)}
