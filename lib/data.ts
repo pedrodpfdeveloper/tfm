@@ -163,6 +163,52 @@ export async function getRandomPublicRecipes(limit: number = 6): Promise<Recipe[
     return shuffled.slice(0, limit);
 }
 
+export type RecipeAndIngredientStats = {
+    totalRecipes: number;
+    publicRecipes: number;
+    privateRecipes: number;
+    totalIngredients: number;
+};
+
+export async function getRecipeAndIngredientStats(): Promise<RecipeAndIngredientStats> {
+    noStore();
+
+    const cookieStore = cookies();
+    const supabase = await createClient(cookieStore);
+
+    const [
+        { count: totalRecipes, error: totalRecipesError },
+        { count: publicRecipes, error: publicRecipesError },
+        { count: privateRecipes, error: privateRecipesError },
+        { count: totalIngredients, error: totalIngredientsError },
+    ] = await Promise.all([
+        supabase.from('recipes').select('id', { count: 'exact', head: true }),
+        supabase.from('recipes').select('id', { count: 'exact', head: true }).eq('is_public', true),
+        supabase.from('recipes').select('id', { count: 'exact', head: true }).eq('is_public', false),
+        supabase.from('ingredients').select('id', { count: 'exact', head: true }),
+    ]);
+
+    if (totalRecipesError) {
+        console.error('Error counting all recipes:', totalRecipesError);
+    }
+    if (publicRecipesError) {
+        console.error('Error counting public recipes:', publicRecipesError);
+    }
+    if (privateRecipesError) {
+        console.error('Error counting private recipes:', privateRecipesError);
+    }
+    if (totalIngredientsError) {
+        console.error('Error counting ingredients:', totalIngredientsError);
+    }
+
+    return {
+        totalRecipes: totalRecipes ?? 0,
+        publicRecipes: publicRecipes ?? 0,
+        privateRecipes: privateRecipes ?? 0,
+        totalIngredients: totalIngredients ?? 0,
+    };
+}
+
 type RoleRef = {
     name: string | null;
 };

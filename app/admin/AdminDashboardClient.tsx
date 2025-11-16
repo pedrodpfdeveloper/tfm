@@ -2,15 +2,17 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { UserWithRole, Role } from "@/lib/data";
+import Link from "next/link";
+import type { UserWithRole, Role, RecipeAndIngredientStats } from "@/lib/data";
 import { changeUserRoleAction, createUserAction, deleteUserAction } from "./actions";
 
 interface AdminDashboardClientProps {
   initialUsers: UserWithRole[];
   roles: Role[];
+  stats: RecipeAndIngredientStats;
 }
 
-export default function AdminDashboardClient({ initialUsers, roles }: AdminDashboardClientProps) {
+export default function AdminDashboardClient({ initialUsers, roles, stats }: AdminDashboardClientProps) {
   const router = useRouter();
 
   const [users, setUsers] = useState<UserWithRole[]>(initialUsers);
@@ -137,52 +139,87 @@ export default function AdminDashboardClient({ initialUsers, roles }: AdminDashb
 
   return (
     <div>
-      <section className="mb-6 flex flex-wrap gap-4 items-end">
-        <div className="flex flex-col min-w-[220px]">
-          <label className="text-sm font-medium mb-1" htmlFor="search-email">
-            Buscar por correo
-          </label>
-          <input
-            id="search-email"
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="ej. usuario@correo.com"
-            className="px-3 py-2 border border-[var(--gray-300)] rounded-md bg-[var(--background)]"
-          />
-        </div>
-        <div className="flex flex-col min-w-[180px]">
-          <label className="text-sm font-medium mb-1" htmlFor="filter-role">
-            Filtrar por rol
-          </label>
-          <select
-            id="filter-role"
-            value={roleFilter === "all" ? "all" : String(roleFilter)}
-            onChange={(e) => {
-              const value = e.target.value;
-              setRoleFilter(value === "all" ? "all" : Number(value));
-            }}
-            className="px-3 py-2 border border-[var(--gray-300)] rounded-md bg-[var(--background)]"
+      <section className="mb-8">
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <h2 className="text-xl font-semibold">Recetas</h2>
+          <Link
+            href="/recetas"
+            className="px-4 py-2 rounded-md border border-[var(--gray-300)] text-sm font-medium hover:bg-[var(--background-50)] transition-colors"
           >
-            <option value="all">Todos</option>
-            {roles.map((role) => (
-              <option key={role.id} value={role.id}>
-                {role.name}
-              </option>
-            ))}
-          </select>
+            Ver y editar recetas
+          </Link>
         </div>
-        <button
-          type="button"
-          onClick={handleOpenCreate}
-          className="px-4 py-2 rounded-md bg-[var(--primary)] text-white font-medium hover:bg-[var(--primary-600)] transition-colors"
-        >
-          Nuevo usuario
-        </button>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="rounded-xl border border-[var(--gray-200)] bg-[var(--background)] p-4 shadow-sm">
+            <p className="text-sm text-[var(--text-color)]/70 mb-1">Recetas totales</p>
+            <p className="text-2xl font-bold text-[var(--text-color)]">{stats.totalRecipes}</p>
+          </div>
+          <div className="rounded-xl border border-[var(--gray-200)] bg-[var(--background)] p-4 shadow-sm">
+            <p className="text-sm text-[var(--text-color)]/70 mb-1">Recetas públicas</p>
+            <p className="text-2xl font-bold text-[var(--text-color)]">{stats.publicRecipes}</p>
+          </div>
+          <div className="rounded-xl border border-[var(--gray-200)] bg-[var(--background)] p-4 shadow-sm">
+            <p className="text-sm text-[var(--text-color)]/70 mb-1">Recetas privadas</p>
+            <p className="text-2xl font-bold text-[var(--text-color)]">{stats.privateRecipes}</p>
+          </div>
+          <div className="rounded-xl border border-[var(--gray-200)] bg-[var(--background)] p-4 shadow-sm">
+            <p className="text-sm text-[var(--text-color)]/70 mb-1">Ingredientes totales</p>
+            <p className="text-2xl font-bold text-[var(--text-color)]">{stats.totalIngredients}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mb-6">
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-4">
+          <h2 className="text-xl font-semibold">Usuarios</h2>
+          <button
+            type="button"
+            onClick={handleOpenCreate}
+            className="px-4 py-2 rounded-md bg-[var(--primary)] text-white font-medium hover:bg-[var(--primary-600)] transition-colors"
+          >
+            Nuevo usuario
+          </button>
+        </div>
+
+        <div className="flex flex-wrap gap-4 items-end">
+          <div className="flex flex-col min-w-[220px]">
+            <label className="text-sm font-medium mb-1" htmlFor="search-email">
+              Buscar por correo
+            </label>
+            <input
+              id="search-email"
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="ej. usuario@correo.com"
+              className="px-3 py-2 border border-[var(--gray-300)] rounded-md bg-[var(--background)]"
+            />
+          </div>
+          <div className="flex flex-col min-w-[180px]">
+            <label className="text-sm font-medium mb-1" htmlFor="filter-role">
+              Filtrar por rol
+            </label>
+            <select
+              id="filter-role"
+              value={roleFilter === "all" ? "all" : String(roleFilter)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setRoleFilter(value === "all" ? "all" : Number(value));
+              }}
+              className="px-3 py-2 border border-[var(--gray-300)] rounded-md bg-[var(--background)]"
+            >
+              <option value="all">Todos</option>
+              {roles.map((role) => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </section>
 
       <section>
-        <h2 className="text-xl font-semibold mb-4">Usuarios</h2>
         {filteredUsers.length === 0 ? (
           <p className="text-sm text-[var(--text-color)]/80">No hay usuarios que coincidan con la búsqueda.</p>
         ) : (
