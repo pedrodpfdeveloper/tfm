@@ -16,7 +16,7 @@ interface RecipeCardProps {
 export default function RecipeCard({ recipe, isAdmin = false }: RecipeCardProps) {
     const [open, setOpen] = useState(false);
     return (
-        <div className="relative border border-[var(--gray-200)] rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
+        <div className="relative h-full flex flex-col overflow-hidden rounded-xl border border-[var(--background-200)] bg-[var(--background-50)] shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-[var(--primary-300)]">
             <Link href={`/recetas/${recipe.id}`} className="group flex flex-1 flex-col">
                 <div className="relative w-full aspect-video">
                     <Image
