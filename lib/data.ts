@@ -46,12 +46,6 @@ export async function getRecipes({ query, ingredients, duration, page = 1 }: Get
         baseQuery = baseQuery.ilike('title', `%${query}%`);
     }
 
-    if (duration) {
-        const [min, max] = duration.split('-').map(Number);
-        if (!isNaN(min)) baseQuery = baseQuery.gte('cook_time_minutes', min);
-        if (!isNaN(max)) baseQuery = baseQuery.lte('cook_time_minutes', max);
-    }
-
     if (ingredients && ingredients.length > 0) {
         const ingredientList = ingredients.split(',');
 
@@ -70,16 +64,46 @@ export async function getRecipes({ query, ingredients, duration, page = 1 }: Get
         baseQuery = baseQuery.in('id', ids);
     }
 
-    baseQuery = baseQuery.order('created_at', { ascending: false }).range(offset, offset + recipesPerPage - 1);
+    if (!duration) {
+        baseQuery = baseQuery.order('created_at', { ascending: false }).range(offset, offset + recipesPerPage - 1);
 
-    const { data: recipes, error, count } = await baseQuery;
+        const { data: recipes, error, count } = await baseQuery;
+
+        if (error) {
+            console.error('Error fetching recipes:', error);
+            throw new Error('No se pudieron cargar las recetas.');
+        }
+
+        return { recipes: recipes ?? [], totalCount: count ?? 0 };
+    }
+
+    baseQuery = baseQuery.order('created_at', { ascending: false });
+
+    const { data: recipes, error } = await baseQuery;
 
     if (error) {
         console.error('Error fetching recipes:', error);
         throw new Error('No se pudieron cargar las recetas.');
     }
 
-    return { recipes: recipes ?? [], totalCount: count ?? 0 };
+    const [minStr, maxStr] = duration.split('-');
+    const min = minStr ? Number(minStr) : NaN;
+    const max = maxStr ? Number(maxStr) : NaN;
+
+    const filteredRecipes = (recipes ?? []).filter((recipe) => {
+        const prep = typeof recipe.prep_time_minutes === 'number' ? recipe.prep_time_minutes : 0;
+        const cook = typeof recipe.cook_time_minutes === 'number' ? recipe.cook_time_minutes : 0;
+        const total = prep + cook;
+
+        if (!Number.isNaN(min) && total < min) return false;
+        if (!Number.isNaN(max) && total > max) return false;
+        return true;
+    });
+
+    const totalCount = filteredRecipes.length;
+    const paginatedRecipes = filteredRecipes.slice(offset, offset + recipesPerPage);
+
+    return { recipes: paginatedRecipes, totalCount };
 }
 
 export async function getRecipeById(id: string): Promise<RecipeWithIngredients | null> {
