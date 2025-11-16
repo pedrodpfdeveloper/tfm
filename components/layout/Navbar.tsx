@@ -1,10 +1,8 @@
-import { cookies } from 'next/headers';
-import { createClient } from '@/utils/supabase/server';
 import NavbarClient from './NavbarClient';
+import { getAuthWithRole } from '@/lib/auth';
 
 export default async function Navbar() {
-    const supabase = await createClient(cookies());
-    const { data: { user } } = await supabase.auth.getUser();
+    const { user, isAdmin } = await getAuthWithRole();
 
-    return <NavbarClient user={user} />;
+    return <NavbarClient user={user} isAdmin={isAdmin} />;
 }

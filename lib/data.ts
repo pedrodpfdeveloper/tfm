@@ -138,3 +138,79 @@ export async function getRandomPublicRecipes(limit: number = 6): Promise<Recipe[
     const shuffled = [...data].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, limit);
 }
+
+type RoleRef = {
+    name: string | null;
+};
+
+type RawUserRow = {
+    id: string;
+    email: string | null;
+    role_id: number;
+    roles: RoleRef | RoleRef[] | null;
+};
+
+export type UserWithRole = {
+    id: string;
+    email: string | null;
+    roleId: number;
+    roles: RoleRef[];
+};
+
+export async function getAllUsersWithRoles(): Promise<UserWithRole[]> {
+    noStore();
+
+    const cookieStore = cookies();
+    const supabase = await createClient(cookieStore);
+
+    const { data, error } = await supabase
+        .from('users')
+        .select('id, email, role_id, roles(name)')
+        .order('created_at', { ascending: true });
+
+    if (error || !data) {
+        console.error('Error fetching users with roles:', error);
+        return [];
+    }
+
+    const rows = data as RawUserRow[];
+
+    return rows.map((row) => {
+        const rolesArray: RoleRef[] = Array.isArray(row.roles)
+            ? row.roles
+            : row.roles
+                ? [row.roles]
+                : [];
+
+        return {
+            id: row.id,
+            email: row.email,
+            roleId: row.role_id,
+            roles: rolesArray.map((role) => ({ name: role.name })),
+        };
+    });
+}
+
+export type Role = {
+    id: number;
+    name: string;
+};
+
+export async function getAllRoles(): Promise<Role[]> {
+    noStore();
+
+    const cookieStore = cookies();
+    const supabase = await createClient(cookieStore);
+
+    const { data, error } = await supabase
+        .from('roles')
+        .select('id, name')
+        .order('id', { ascending: true });
+
+    if (error || !data) {
+        console.error('Error fetching roles:', error);
+        return [];
+    }
+
+    return data as Role[];
+}

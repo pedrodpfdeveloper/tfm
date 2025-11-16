@@ -10,9 +10,10 @@ import type { User } from '@supabase/supabase-js';
 
 interface NavbarClientProps {
     user: User | null;
+    isAdmin?: boolean;
 }
 
-export default function NavbarClient({ user }: NavbarClientProps) {
+export default function NavbarClient({ user, isAdmin }: NavbarClientProps) {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -78,6 +79,9 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                     <Link href="/recetas" className="hover:text-[var(--primary)] transition-colors">Recetas</Link>
                     <Link href="/#faq" className="hover:text-[var(--primary)] transition-colors">FAQ</Link>
                     <Link href="/contacto" className="hover:text-[var(--primary)] transition-colors">Contacto</Link>
+                    {isAdmin && (
+                        <Link href="/admin" className="hover:text-[var(--primary)] transition-colors">Admin</Link>
+                    )}
                 </div>
                 <div className="flex items-center space-x-4">
                     <ThemeSwitcher />
@@ -149,6 +153,15 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                         <Link href="/contacto" className="hover:text-[var(--primary)] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
                             Contacto
                         </Link>
+                        {isAdmin && (
+                            <Link
+                                href="/admin"
+                                className="hover:text-[var(--primary)] transition-colors"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                                Admin
+                            </Link>
+                        )}
                         {!user && (
                             <>
                                 <Link
