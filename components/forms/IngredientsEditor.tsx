@@ -85,7 +85,7 @@ export default function IngredientsEditor({
 
       <div className="space-y-2">
         {items.map((item) => (
-          <div key={item.id} className="grid grid-cols-12 gap-2 items-center">
+          <div key={item.id} className="grid grid-cols-12 gap-2 items-end">
             <div className="col-span-6">
               <label className="block text-xs mb-1">Ingrediente</label>
               <input
@@ -109,7 +109,7 @@ export default function IngredientsEditor({
                 placeholder="Ej. 2 unidades, 100 g..."
               />
             </div>
-            <div className="col-span-1 flex items-center justify-end">
+            <div className="col-span-1 flex items-center justify-end mb-1.5">
               <button
                 type="button"
                 onClick={() => removeRow(item.id)}

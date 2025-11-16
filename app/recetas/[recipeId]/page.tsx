@@ -71,7 +71,10 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
                     <ul className="space-y-2 list-disc list-inside">
                         {recipe.recipe_ingredients.map((item, index) => (
                             <li key={index}>
-                                <span className="font-semibold">{item.ingredients.name}:</span> {item.quantity}
+                                <span className="font-semibold">
+                                  {item.ingredients.name.charAt(0).toUpperCase() + item.ingredients.name.slice(1)}:
+                                </span>{' '}
+                                  {item.quantity.toString().charAt(0).toUpperCase() + item.quantity.toString().slice(1)}
                             </li>
                         ))}
                     </ul>
