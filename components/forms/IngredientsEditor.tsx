@@ -78,7 +78,7 @@ export default function IngredientsEditor({
     <div className="space-y-3">
       <div>
         <h2 className="text-lg font-semibold">Ingredientes</h2>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-400">
           Añade los ingredientes de la receta, puedes reutilizar los ya existentes o escribir nuevos.
         </p>
       </div>
