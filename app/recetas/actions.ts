@@ -99,6 +99,77 @@ export async function createRecipe(formData: FormData) {
     .select("id")
     .single();
 
+  if (!error && data) {
+    const ingredientNames = formData
+      .getAll("ingredient_name")
+      .map((v) => String(v).trim());
+    const ingredientQuantities = formData
+      .getAll("ingredient_quantity")
+      .map((v) => String(v).trim());
+
+    const items = ingredientNames
+      .map((name, index) => ({
+        name,
+        quantity: ingredientQuantities[index] ?? "",
+      }))
+      .filter((item) => item.name.length > 0);
+
+    if (items.length > 0) {
+      const uniqueNames = Array.from(new Set(items.map((item) => item.name)));
+
+      let existing: { id: number; name: string }[] = [];
+      const { data: existingRows, error: existingError } = await supabase
+        .from("ingredients")
+        .select("id, name")
+        .in("name", uniqueNames);
+
+      if (!existingError && existingRows) {
+        existing = existingRows as { id: number; name: string }[];
+      }
+
+      const existingByName = new Map<string, number>(
+        existing.map((row) => [row.name, row.id])
+      );
+
+      const namesToInsert = uniqueNames.filter(
+        (name) => !existingByName.has(name)
+      );
+
+      if (namesToInsert.length > 0) {
+        const { data: insertedRows, error: insertError } = await supabase
+          .from("ingredients")
+          .insert(namesToInsert.map((name) => ({ name })))
+          .select("id, name");
+
+        if (!insertError && insertedRows) {
+          for (const row of insertedRows as { id: number; name: string }[]) {
+            existingByName.set(row.name, row.id);
+          }
+        }
+      }
+
+      const recipeIngredientsRows = items
+        .map((item) => {
+          const ingredientId = existingByName.get(item.name);
+          if (!ingredientId) return null;
+          return {
+            recipe_id: data.id,
+            ingredient_id: ingredientId,
+            quantity: item.quantity || null,
+          };
+        })
+        .filter((row) => row !== null) as {
+        recipe_id: number;
+        ingredient_id: number;
+        quantity: string | null;
+      }[];
+
+      if (recipeIngredientsRows.length > 0) {
+        await supabase.from("recipe_ingredients").insert(recipeIngredientsRows);
+      }
+    }
+  }
+
   revalidatePath("/recetas");
   if (error || !data) redirect("/recetas");
   redirect(`/recetas/${data.id}`);
@@ -149,7 +220,7 @@ export async function updateRecipe(formData: FormData) {
       image_url = data.publicUrl;
     }
   }
-  await supabase
+  const { error } = await supabase
     .from("recipes")
     .update({
       title,
@@ -162,6 +233,81 @@ export async function updateRecipe(formData: FormData) {
       is_public,
     })
     .eq("id", id);
+
+  if (!error) {
+    const ingredientNames = formData
+      .getAll("ingredient_name")
+      .map((v) => String(v).trim());
+    const ingredientQuantities = formData
+      .getAll("ingredient_quantity")
+      .map((v) => String(v).trim());
+
+    const items = ingredientNames
+      .map((name, index) => ({
+        name,
+        quantity: ingredientQuantities[index] ?? "",
+      }))
+      .filter((item) => item.name.length > 0);
+
+    await supabase.from("recipe_ingredients").delete().eq("recipe_id", id);
+
+    if (items.length > 0) {
+      const uniqueNames = Array.from(new Set(items.map((item) => item.name)));
+
+      let existing: { id: number; name: string }[] = [];
+      const { data: existingRows, error: existingError } = await supabase
+        .from("ingredients")
+        .select("id, name")
+        .in("name", uniqueNames);
+
+      if (!existingError && existingRows) {
+        existing = existingRows as { id: number; name: string }[];
+      }
+
+      const existingByName = new Map<string, number>(
+        existing.map((row) => [row.name, row.id])
+      );
+
+      const namesToInsert = uniqueNames.filter(
+        (name) => !existingByName.has(name)
+      );
+
+      if (namesToInsert.length > 0) {
+        const { data: insertedRows, error: insertError } = await supabase
+          .from("ingredients")
+          .insert(namesToInsert.map((name) => ({ name })))
+          .select("id, name");
+
+        if (!insertError && insertedRows) {
+          for (const row of insertedRows as { id: number; name: string }[]) {
+            existingByName.set(row.name, row.id);
+          }
+        }
+      }
+
+      const recipeIngredientsRows = items
+        .map((item) => {
+          const ingredientId = existingByName.get(item.name);
+          if (!ingredientId) return null;
+          return {
+            recipe_id: id,
+            ingredient_id: ingredientId,
+            quantity: item.quantity || null,
+          };
+        })
+        .filter((row) => row !== null) as {
+        recipe_id: number;
+        ingredient_id: number;
+        quantity: string | null;
+      }[];
+
+      if (recipeIngredientsRows.length > 0) {
+        await supabase
+          .from("recipe_ingredients")
+          .insert(recipeIngredientsRows);
+      }
+    }
+  }
 
   revalidatePath("/recetas");
   redirect(`/recetas/${id}`);

@@ -1,9 +1,10 @@
 import { getAuthWithRole } from "@/lib/auth";
-import { getRecipeById } from "@/lib/data";
+import { getRecipeById, getAllIngredients } from "@/lib/data";
 import { updateRecipe } from "@/app/recetas/actions";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import ImageUploader from "@/components/forms/ImageUploader";
+import IngredientsEditor from "@/components/forms/IngredientsEditor";
 
 interface Props {
   params: { recipeId: string } | Promise<{ recipeId: string }>;
@@ -16,6 +17,14 @@ export default async function EditRecipePage({ params }: Props) {
 
   const recipe = await getRecipeById(p.recipeId);
   if (!recipe) notFound();
+
+  const allIngredients = await getAllIngredients();
+  const ingredientNames = allIngredients.map((i) => i.name);
+  const initialIngredients =
+    recipe.recipe_ingredients?.map((ri) => ({
+      name: ri.ingredients?.name ?? "",
+      quantity: ri.quantity ?? "",
+    })) ?? [];
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-12">
@@ -58,6 +67,10 @@ export default async function EditRecipePage({ params }: Props) {
           <label className="block text-sm mb-1">Instrucciones</label>
           <textarea name="instructions" defaultValue={recipe.instructions} required className="w-full border rounded-md p-2" rows={6} />
         </div>
+        <IngredientsEditor
+          existingIngredients={ingredientNames}
+          initialItems={initialIngredients}
+        />
         <ImageUploader className="w-full" existingUrl={recipe.image_url ?? null} />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>

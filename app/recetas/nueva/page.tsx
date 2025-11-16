@@ -3,10 +3,15 @@ import { createRecipe } from "../actions";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import ImageUploader from "@/components/forms/ImageUploader";
+import IngredientsEditor from "@/components/forms/IngredientsEditor";
+import { getAllIngredients } from "@/lib/data";
 
 export default async function NewRecipePage() {
   const { isAdmin } = await getAuthWithRole();
   if (!isAdmin) redirect("/recetas");
+
+  const allIngredients = await getAllIngredients();
+  const ingredientNames = allIngredients.map((i) => i.name);
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-12">
@@ -47,6 +52,7 @@ export default async function NewRecipePage() {
           <label className="block text-sm mb-1">Instrucciones</label>
           <textarea name="instructions" required className="w-full border rounded-md p-2" rows={6} />
         </div>
+        <IngredientsEditor existingIngredients={ingredientNames} />
         <ImageUploader className="w-full" />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
