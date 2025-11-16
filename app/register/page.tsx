@@ -60,7 +60,7 @@ export default function Register() {
                 <form onSubmit={handleRegister} className="space-y-6">
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-[var(--text-color)]">
-                            Correo electrónico
+                            Correo electrónico *
                         </label>
                         <input
                             id="email"
@@ -74,7 +74,7 @@ export default function Register() {
                     </div>
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-[var(--text-color)]">
-                            Contraseña
+                            Contraseña *
                         </label>
                         <div className="relative mt-1">
                             <input

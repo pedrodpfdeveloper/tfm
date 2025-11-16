@@ -35,7 +35,20 @@ export async function POST(request: Request) {
 
     if (error) {
         console.error('Error de Supabase:', error);
-        return NextResponse.json({ message: error.message }, { status: 400 });
+
+        const rawMessage = error.message || '';
+        const lowered = rawMessage.toLowerCase();
+        let translated = 'Ocurrió un error al registrar la cuenta.';
+
+        if (lowered.includes('password')) {
+            translated = 'La contraseña no cumple los requisitos de seguridad.';
+        } else if (lowered.includes('user already registered') || lowered.includes('user already exists') || lowered.includes('duplicate key')) {
+            translated = 'Ya existe un usuario registrado con este correo.';
+        } else if (lowered.includes('invalid email')) {
+            translated = 'El correo electrónico no es válido.';
+        }
+
+        return NextResponse.json({ message: translated }, { status: 400 });
     }
 
     return NextResponse.json({ message: 'Usuario creado con éxito', user: data.user }, { status: 201 });
