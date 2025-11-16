@@ -22,7 +22,7 @@ export default async function RotatingRecipesSection() {
             <Link
               key={`${recipe.id}-${index}`}
               href={`/recetas/${recipe.id}`}
-              className="shrink-0 w-[320px] sm:w-[360px]"
+              className="shrink-0 w-[240px] sm:w-[280px]"
             >
               <article className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden shadow-md bg-[var(--background-100)] hover:shadow-xl transition-shadow duration-300">
                 <div className="relative w-full h-full">

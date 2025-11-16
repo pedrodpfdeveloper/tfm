@@ -15,6 +15,8 @@ if (supabaseHostname) {
     remotePatterns.push({ protocol: 'https', hostname: supabaseHostname, pathname: '/**' });
 }
 
+const isProd = process.env.NODE_ENV === 'production';
+
 const csp = [
     "default-src 'self'",
     "base-uri 'self'",
@@ -22,17 +24,21 @@ const csp = [
     "frame-ancestors 'self'",
     `img-src 'self' data: https://img.spoonacular.com${supabaseHostname ? ` https://${supabaseHostname}` : ''}`,
     `connect-src 'self'${supabaseHostname ? ` https://${supabaseHostname}` : ''} https://www.google.com https://www.gstatic.com`,
-    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.google.com https://www.gstatic.com",
+    isProd
+        ? "script-src 'self' https://www.google.com https://www.gstatic.com"
+        : "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.google.com https://www.gstatic.com",
     "style-src 'self' 'unsafe-inline'",
     "frame-src 'self' https://www.google.com",
     "object-src 'none'",
 ].join('; ');
 
 const securityHeaders = [
-    {
-        key: 'Content-Security-Policy',
-        value: csp,
-    },
+    ...(isProd
+        ? [{
+            key: 'Content-Security-Policy',
+            value: csp,
+        }]
+        : []),
     {
         key: 'X-Content-Type-Options',
         value: 'nosniff',
