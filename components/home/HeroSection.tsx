@@ -13,7 +13,7 @@ export default function HeroSection() {
                 </p>
                 <div className="flex space-x-4">
                     <Link href="/recetas" className="px-6 py-3 bg-[var(--primary)] text-[var(--background)] rounded-xl font-semibold hover:opacity-90 transition-opacity">Ver recetas</Link>
-                    <Link href="/register" className="px-6 py-3 border border-[var(--primary)] text-[var(--primary)] rounded-xl font-semibold hover:bg-[var(--primary)] hover:text-[var(--background)] transition-colors">Registrarse gratis</Link>
+                    <Link href="/login" className="px-6 py-3 border border-[var(--primary)] text-[var(--primary)] rounded-xl font-semibold hover:bg-[var(--primary)] hover:text-[var(--background)] transition-colors">Inicia sesión</Link>
                 </div>
             </div>
             <div className="md:w-1/2 mt-10 md:mt-0 flex justify-center">
