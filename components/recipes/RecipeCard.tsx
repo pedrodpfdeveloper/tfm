@@ -17,7 +17,7 @@ export default function RecipeCard({ recipe, isAdmin = false }: RecipeCardProps)
     const [open, setOpen] = useState(false);
     return (
         <div className="relative border border-[var(--gray-200)] rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
-            <Link href={`/recetas/${recipe.id}`} className="block group flex-1">
+            <Link href={`/recetas/${recipe.id}`} className="group flex flex-1 flex-col">
                 <div className="relative w-full aspect-video">
                     <Image
                         src={recipe.image_url || '/placeholder-image.png'}
@@ -28,11 +28,10 @@ export default function RecipeCard({ recipe, isAdmin = false }: RecipeCardProps)
                         loading="eager"
                     />
                 </div>
-
-                <div className="p-4 flex flex-col">
+                <div className="p-4 flex flex-1 flex-col">
                     <h3 className="text-xl font-bold text-[var(--primary)] mb-2 line-clamp-2 min-h-[2.75rem]">{recipe.title}</h3>
                     <p className="text-[var(--text)]/80 text-sm line-clamp-3 min-h-[3.75rem]">{recipe.description}</p>
-                    <div className="flex justify-between items-center mt-4 text-xs text-[var(--text)]/60">
+                    <div className="flex justify-between items-center mt-auto pt-4 text-xs text-[var(--text)]/60">
                         <span><span className="font-semibold">Preparación:</span> {recipe.prep_time_minutes} min</span>
                         <span><span className="font-semibold">Cocción:</span> {recipe.cook_time_minutes} min</span>
                     </div>
