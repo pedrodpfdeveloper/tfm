@@ -15,11 +15,23 @@ export default function RecipeFilters({ ingredientsList }: RecipeFiltersProps) {
 
     const [open, setOpen] = useState(false);
     const wrapperRef = useRef<HTMLDivElement | null>(null);
+    const [ingredientSearch, setIngredientSearch] = useState("");
 
     const selected = useMemo(() => {
         const raw = searchParams.get("ingredients") ?? "";
         return raw ? raw.split(",").filter(Boolean) : [];
     }, [searchParams]);
+
+    const filteredIngredients = useMemo(
+        () => {
+            if (!ingredientSearch.trim()) return ingredientsList;
+            const term = ingredientSearch.toLowerCase();
+            return ingredientsList.filter((ing) =>
+                ing.name.toLowerCase().includes(term)
+            );
+        },
+        [ingredientsList, ingredientSearch]
+    );
 
     const updateIngredientsFilter = (newSelected: string[]) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -138,27 +150,42 @@ export default function RecipeFilters({ ingredientsList }: RecipeFiltersProps) {
                         {ingredientsList.length === 0 ? (
                             <div className="p-2">No hay ingredientes</div>
                         ) : (
-                            ingredientsList.map((ing) => {
-                                const isChecked = selected.includes(ing.name);
-                                return (
-                                    <label
-                                        key={ing.name}
-                                        className="flex items-center gap-2 p-2 rounded-md cursor-pointer hover:bg-[var(--dropdown-hover,#f3f4f6)]"
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            checked={isChecked}
-                                            onChange={() => toggleSelect(ing.name)}
-                                            className="w-4 h-4"
-                                        />
-                                        <span className="truncate">{ing.name}</span>
-                                    </label>
-                                );
-                            })
+                            <>
+                                <div className="p-2 pb-3 border-b border-[var(--dropdown-border,#d1d5db)]">
+                                    <input
+                                        type="search"
+                                        placeholder="Buscar ingrediente..."
+                                        value={ingredientSearch}
+                                        onChange={(e) => setIngredientSearch(e.target.value)}
+                                        className="w-full p-2 border rounded-md bg-[var(--input-bg,transparent)] text-[var(--input-text,#000)] border-[var(--input-border,#d1d5db)] text-sm"
+                                    />
+                                </div>
+                                <div className="max-h-40 overflow-auto pr-1 mt-1">
+                                    {filteredIngredients.length === 0 ? (
+                                        <div className="p-2">No hay resultados</div>
+                                    ) : (
+                                        filteredIngredients.map((ing) => {
+                                            const isChecked = selected.includes(ing.name);
+                                            return (
+                                                <label
+                                                    key={ing.name}
+                                                    className="flex items-center gap-2 p-2 rounded-md cursor-pointer hover:bg-[var(--dropdown-hover,#f3f4f6)]"
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isChecked}
+                                                        onChange={() => toggleSelect(ing.name)}
+                                                        className="w-4 h-4"
+                                                    />
+                                                    <span className="truncate">{ing.name}</span>
+                                                </label>
+                                            );
+                                        })
+                                    )}
+                                </div>
+                            </>
                         )}
-
                         <div className="mt-2 border-t pt-2 flex gap-2">
-
                             <button
                                 type="button"
                                 onClick={() => updateIngredientsFilter([])}
