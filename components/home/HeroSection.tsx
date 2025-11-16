@@ -1,7 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function HeroSection() {
+interface HeroSectionProps {
+    isLoggedIn?: boolean;
+}
+
+export default function HeroSection({ isLoggedIn }: HeroSectionProps) {
     return (
         <section className="flex flex-col md:flex-row items-center justify-between px-10 py-20 max-w-7xl mx-auto">
             <div className="md:w-1/2 space-y-6">
@@ -13,7 +17,9 @@ export default function HeroSection() {
                 </p>
                 <div className="flex space-x-4">
                     <Link href="/recetas" className="px-6 py-3 bg-[var(--primary)] text-[var(--background)] rounded-xl font-semibold hover:opacity-90 transition-opacity">Ver recetas</Link>
-                    <Link href="/login" className="px-6 py-3 border border-[var(--primary)] text-[var(--primary)] rounded-xl font-semibold hover:bg-[var(--primary)] hover:text-[var(--background)] transition-colors">Inicia sesión</Link>
+                    {!isLoggedIn && (
+                        <Link href="/login" className="px-6 py-3 border border-[var(--primary)] text-[var(--primary)] rounded-xl font-semibold hover:bg-[var(--primary)] hover:text-[var(--background)] transition-colors">Inicia sesión</Link>
+                    )}
                 </div>
             </div>
             <div className="md:w-1/2 mt-10 md:mt-0 flex justify-center">
