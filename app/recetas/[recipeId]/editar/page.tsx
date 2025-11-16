@@ -75,11 +75,11 @@ export default async function EditRecipePage({ params }: Props) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm mb-1">Prep. (min)</label>
-            <input type="number" name="prep_time_minutes" defaultValue={recipe.prep_time_minutes ?? undefined} className="w-full border rounded-md p-2" />
+            <input type="number" name="prep_time_minutes" min={0} defaultValue={recipe.prep_time_minutes ?? undefined} className="w-full border rounded-md p-2" />
           </div>
           <div>
             <label className="block text-sm mb-1">Cocción (min)</label>
-            <input type="number" name="cook_time_minutes" defaultValue={recipe.cook_time_minutes ?? undefined} className="w-full border rounded-md p-2" />
+            <input type="number" name="cook_time_minutes" min={0} defaultValue={recipe.cook_time_minutes ?? undefined} className="w-full border rounded-md p-2" />
           </div>
         </div>
         <div className="flex items-center gap-2">

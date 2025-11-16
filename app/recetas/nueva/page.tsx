@@ -57,11 +57,11 @@ export default async function NewRecipePage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm mb-1">Prep. (min)</label>
-            <input type="number" name="prep_time_minutes" className="w-full border rounded-md p-2" />
+            <input type="number" name="prep_time_minutes" min={0} className="w-full border rounded-md p-2" />
           </div>
           <div>
             <label className="block text-sm mb-1">Cocción (min)</label>
-            <input type="number" name="cook_time_minutes" className="w-full border rounded-md p-2" />
+            <input type="number" name="cook_time_minutes" min={0} className="w-full border rounded-md p-2" />
           </div>
         </div>
         <div className="flex items-center gap-2">
