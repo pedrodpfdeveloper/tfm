@@ -45,13 +45,16 @@ export default async function RecipeDetailPage({ params }: RecipeDetailPageProps
                 <h1 className="text-4xl md:text-5xl font-bold text-[var(--primary)] mt-4">{recipe.title}</h1>
             </div>
             <p className="text-lg text-[var(--text)]/80 mb-8">{recipe.description}</p>
-            <div className="relative w-full h-64 md:h-96 rounded-xl overflow-hidden mb-8 shadow-lg">
-                <Image
-                    src={recipe.image_url || '/placeholder-image.png'}
-                    alt={`Imagen de ${recipe.title}`}
-                    layout="fill"
-                    objectFit="cover"
-                />
+            <div className="flex justify-center mb-8">
+                <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md rounded-xl overflow-hidden shadow-lg">
+                    <Image
+                        src={recipe.image_url || '/placeholder-image.png'}
+                        alt={`Imagen de ${recipe.title}`}
+                        width={600}
+                        height={800}
+                        className="w-full h-auto object-cover"
+                    />
+                </div>
             </div>
 
             <div className="flex flex-wrap gap-x-8 gap-y-4 mb-10 p-4 border rounded-lg bg-[var(--background-50)]">
